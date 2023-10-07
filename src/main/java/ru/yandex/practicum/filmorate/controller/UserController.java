@@ -5,22 +5,26 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmorateStorage;
+import ru.yandex.practicum.filmorate.util.GsonUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @RestController()
 @RequestMapping("/users")
-public class UserController extends FilmorateStorage {
+public class UserController {
+
+    private final HashMap<Integer, User> userStorage = new HashMap<>();
+    private int id = 1;
 
     @PostMapping
     public User addUser(@RequestBody String gsonString) {
         log.info("Received request to add new user");
         User userWithId = validateUser(gsonString).toBuilder().id(id++).build();
-        filmorateStorageHashMap.put(userWithId.getId(), userWithId);
+        userStorage.put(userWithId.getId(), userWithId);
         log.info("User added successfully: {}", userWithId);
         return userWithId;
     }
@@ -29,8 +33,8 @@ public class UserController extends FilmorateStorage {
     public User updateUser(@RequestBody String gsonString) {
         log.info("Received request to update user");
         User newUser = validateUser(gsonString);
-        if (filmorateStorageHashMap.containsKey(newUser.getId())) {
-            filmorateStorageHashMap.put(newUser.getId(), newUser);
+        if (userStorage.containsKey(newUser.getId())) {
+            userStorage.put(newUser.getId(), newUser);
             log.info("User updated successfully: {}", newUser);
             return newUser;
         } else {
@@ -40,13 +44,13 @@ public class UserController extends FilmorateStorage {
     }
 
     @GetMapping
-    public List<Object> getAllUsers() {
+    public List<User> getAllUsers() {
         log.info("Received request to get all users");
-        return new ArrayList<>(filmorateStorageHashMap.values());
+        return new ArrayList<>(userStorage.values());
     }
 
     private User validateUser(String gsonString) {
-        User user = gson.fromJson(gsonString, User.class);
+        User user = GsonUtil.fromJson(gsonString, User.class);
         isValidMail(user);
         isValidLogin(user);
         isValidBirthday(user);

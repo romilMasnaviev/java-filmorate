@@ -5,22 +5,28 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmorateStorage;
+import ru.yandex.practicum.filmorate.util.GsonUtil;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @RestController()
 @RequestMapping("/films")
-public class FilmController extends FilmorateStorage {
+public class FilmController {
 
+    private static final LocalDate FILM_MINIMUM_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private static final int FILM_DESCRIPTIONS_LENGTH = 200;
+    private final HashMap<Integer, Film> filmStorage = new HashMap<>();
+    private int id = 1;
 
     @PostMapping
     public Film addFilm(@RequestBody String gsonString) {
         log.info("Received request to add new film");
         Film filmWithId = validateFilm(gsonString).toBuilder().id(id++).build();
-        filmorateStorageHashMap.put(filmWithId.getId(), filmWithId);
+        filmStorage.put(filmWithId.getId(), filmWithId);
         log.info("Film added successfully: {}", filmWithId);
         return filmWithId;
     }
@@ -29,8 +35,8 @@ public class FilmController extends FilmorateStorage {
     public Film updateFilm(@RequestBody String gsonString) {
         log.info("Received request to update film");
         Film newFilm = validateFilm(gsonString);
-        if (filmorateStorageHashMap.containsKey(newFilm.getId())) {
-            filmorateStorageHashMap.put(newFilm.getId(), newFilm);
+        if (filmStorage.containsKey(newFilm.getId())) {
+            filmStorage.put(newFilm.getId(), newFilm);
             log.info("Film updated successfully: {}", newFilm);
             return newFilm;
         } else {
@@ -40,13 +46,13 @@ public class FilmController extends FilmorateStorage {
     }
 
     @GetMapping
-    public List<Object> getAllFilms() {
+    public List<Film> getAllFilms() {
         log.info("Received request to get all films");
-        return new ArrayList<>(filmorateStorageHashMap.values());
+        return new ArrayList<>(filmStorage.values());
     }
 
     private Film validateFilm(String gsonString) {
-        Film film = gson.fromJson(gsonString, Film.class);
+        Film film = GsonUtil.fromJson(gsonString, Film.class);
         isValidName(film);
         isValidDescription(film);
         isValidDuration(film);
