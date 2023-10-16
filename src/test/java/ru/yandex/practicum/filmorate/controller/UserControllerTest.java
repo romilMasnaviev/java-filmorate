@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.adapter.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
@@ -34,67 +35,67 @@ class UserControllerTest {
 
     @BeforeEach
     public void setup() {
-        userController = new UserController();
+        userController = new UserController(new InMemoryUserStorage());
     }
 
     @Test
     public void addUser_emptyMail_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(emptyMail));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(emptyMail, User.class)));
     }
 
     @Test
     public void addUser_mailWithoutAt_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(mailWithoutAt));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(mailWithoutAt, User.class)));
     }
 
     @Test
     public void addUser_validMail_getAddedUser() {
         User expecetedUser = gson.fromJson(validMail, User.class);
-        User user = userController.addUser(validMail);
+        User user = userController.addUser(gson.fromJson(validMail, User.class));
         assertEquals(expecetedUser, user);
     }
 
     @Test
     public void addUser_emptyLogin_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(emptyLogin));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(emptyLogin, User.class)));
     }
 
     @Test
     public void addUser_loginWithWhiteSpace_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(loginWithWhiteSpace));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(loginWithWhiteSpace, User.class)));
     }
 
     @Test
     public void addUser_validLogin_getAddedUser() {
         User expecetedUser = gson.fromJson(validLogin, User.class);
-        User user = userController.addUser(validLogin);
+        User user = userController.addUser(gson.fromJson(validLogin, User.class));
         assertEquals(expecetedUser, user);
     }
 
     @Test
     public void addUser_emptyName_getAddedUserWithLoginAsName() {
         User expecetedUser = gson.fromJson(emptyName, User.class).toBuilder().name("login").build();
-        User user = userController.addUser(emptyName);
+        User user = userController.addUser(gson.fromJson(emptyName, User.class));
         assertEquals(expecetedUser, user);
     }
 
     @Test
     public void addUser_validName_getAddedUser() {
         User expecetedUser = gson.fromJson(validName, User.class);
-        User user = userController.addUser(validName);
+        User user = userController.addUser(gson.fromJson(validName, User.class));
         assertEquals(expecetedUser, user);
     }
 
     @Test
     public void addUser_earlierNowBirthday_getAddedUser() {
         User expecetedUser = gson.fromJson(earlierNowBirthday, User.class);
-        User user = userController.addUser(earlierNowBirthday);
+        User user = userController.addUser(gson.fromJson(earlierNowBirthday, User.class));
         assertEquals(expecetedUser, user);
     }
 
     @Test
     public void addUser_laterNowBirthday_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(laterNowBirthday));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(laterNowBirthday, User.class)));
     }
 
 }
