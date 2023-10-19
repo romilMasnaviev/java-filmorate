@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.adapter.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
@@ -21,28 +21,28 @@ class UserControllerTest {
     //test mail parameter
     private static final String emptyMail = "{\"id\":1,\"email\":\"\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
     private static final String mailWithoutAt = "{\"id\":1,\"email\":\"email.ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
-    private static final String validMail = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
+    private static final String validMail = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\",\"friendsId\":[]}";
     //test login parameter
     private static final String emptyLogin = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
     private static final String loginWithWhiteSpace = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"log in\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
-    private static final String validLogin = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
+    private static final String validLogin = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\",\"friendsId\":[]}";
     //test name parameter
-    private static final String emptyName = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"\",\"birthday\":\"0001-01-01\"}";
-    private static final String validName = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
+    private static final String emptyName = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"\",\"birthday\":\"0001-01-01\",\"friendsId\":[]}";
+    private static final String validName = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\",\"friendsId\":[]}";
     //test birthday parameter
-    private static final String earlierNowBirthday = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\"}";
+    private static final String earlierNowBirthday = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"0001-01-01\",\"friendsId\":[]}";
     private static final String laterNowBirthday = "{\"id\":1,\"email\":\"email@ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"3000-01-01\"}";
     private static UserController userController;
 
     @BeforeEach
     public void setup() {
         InMemoryUserStorage storage = new InMemoryUserStorage();
-        userController = new UserController(storage,new UserService(storage));
+        userController = new UserController(storage, new UserService(storage));
     }
 
     @Test
     public void addUser_emptyMail_getValidationException() {
-        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(emptyMail, User.class)));
+        assertThrows(ValidationException.class, () -> userController.addUser(gson.fromJson(emptyMail, User.class).toBuilder().build()));
     }
 
     @Test

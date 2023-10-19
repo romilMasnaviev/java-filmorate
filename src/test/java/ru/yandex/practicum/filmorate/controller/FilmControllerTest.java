@@ -28,7 +28,7 @@ class FilmControllerTest {
             "asjnflkdjnalkfdnjskksfljnelkjnfsalkjlfnealknfki" +
             "\"," +
             "\"releaseDate\":\"2000-01-01\"" +
-            ",\"duration\":100}";
+            ",\"duration\":100,\"likes\":[]}";
 
     private static final String film199CharsDescription = "{\"id\":1," +
             "\"name\":1\"\"," +
@@ -37,7 +37,7 @@ class FilmControllerTest {
             "sakfjnsdaknfaskljnfdlkjnaskjansfkdasjnfsalkjfnaslkd" +
             "\"," +
             "\"releaseDate\":\"2000-01-01\"" +
-            ",\"duration\":100}";
+            ",\"duration\":100,\"likes\":[]}";
 
     private static final String film200CharsDescription = "{\"id\":1," +
             "\"name\":1\"\"," +
@@ -47,7 +47,7 @@ class FilmControllerTest {
             "kd" +
             "\"," +
             "\"releaseDate\":\"2000-01-01\"" +
-            ",\"duration\":100}";
+            ",\"duration\":100,\"likes\":[]}";
 
     private static final String film201CharsDescription = "{\"id\":1," +
             "\"name\":1\"\"," +
@@ -74,16 +74,16 @@ class FilmControllerTest {
     //test date parameter
     private static final String filmDateEarlier1895_12_28 = "{\"id\":1,\"name\":1\"\",\"description\":\"1\",\"releaseDate\":\"1894-01-01\",\"duration\":100}";
     private static final String filmDate1895_12_27 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"1895-12-27\",\"duration\":100}";
-    private static final String filmDate1895_12_28 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"1895-12-28\",\"duration\":100}";
-    private static final String filmDate2000_12_28 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":100}";
+    private static final String filmDate1895_12_28 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"1895-12-28\",\"duration\":100,\"likes\":[]}";
+    private static final String filmDate2000_12_28 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":100,\"likes\":[]}";
 
 
     //test duration parameter
     private static final String filmDurationIsMinus100 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":-100}";
     private static final String filmDurationIsMinus1 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":-1}";
     private static final String filmDurationIs0 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":0}";
-    private static final String filmDurationIs1 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":1}";
-    private static final String filmDurationIs100 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":100}";
+    private static final String filmDurationIs1 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":1,\"likes\":[]}";
+    private static final String filmDurationIs100 = "{\"id\":1,\"name\":1\"\",\"description\":1\"1\",\"releaseDate\":\"2000-12-28\",\"duration\":100,\"likes\":[]}";
 
 
     private static final Gson gson = new GsonBuilder()
@@ -121,6 +121,7 @@ class FilmControllerTest {
     public void addFilm_200CharsDescription_GetAddedFilm() {
         Film expectedFilm = gson.fromJson(film200CharsDescription, Film.class);
         Film film = filmController.addFilm(gson.fromJson(film200CharsDescription, Film.class));
+        System.out.println(gson.toJson(film));
         assertEquals(expectedFilm, film);
     }
 
