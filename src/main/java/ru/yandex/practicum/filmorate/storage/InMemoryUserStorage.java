@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -8,38 +8,50 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-@Service
+@Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Integer, User> userStorage = new HashMap<>();
+    private final HashMap<Integer, User> storage = new HashMap<>();
     private int id = 1;
 
     public User addUser(User user) {
-        User userWithId = validateUser(user).toBuilder().id(id++).build();
-        userStorage.put(userWithId.getId(), userWithId);
+        User userWithId = validateUser(user).toBuilder().id(id++).friendsId(new HashSet<>()).build();
+        storage.put(userWithId.getId(), userWithId);
         return userWithId;
     }
 
     public User updateUser(User user) {
         User newUser = validateUser(user);
-        if (userStorage.containsKey(newUser.getId())) {
-            userStorage.put(newUser.getId(), newUser);
+        if (newUser.getFriendsId()==null){
+            newUser.setFriendsId(new HashSet<>());
+        }
+        if (storage.containsKey(newUser.getId())) {
+            storage.put(newUser.getId(), newUser);
             return newUser;
         } else {
             throw new NotFoundException("There is no such user in the library");
         }
     }
 
-    @Override
-    public User deleteUser(User userId) {
-        //TODO
-        return null;
+    public User deleteUser(int userId) {
+        return storage.remove(userId);
+    }
+
+    public User getUser(int userId) {
+        if (storage.containsKey(userId)){
+            return storage.get(userId);
+        } else throw new NotFoundException("User not found");
+    }
+
+    public boolean containsUser(int userId){
+        return storage.containsKey(userId);
     }
 
     public List<User> getAllUsers() {
-        return new ArrayList<>(userStorage.values());
+        return new ArrayList<>(storage.values());
     }
 
     private User validateUser(User user) {
@@ -63,7 +75,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private void isValidLogin(User user) {
-        if ((user.getLogin().contains(" ") | user.getLogin().isEmpty())) {
+        if (user.getLogin().contains(" ") | user.getLogin().isEmpty()) {
             throw new ValidationException("The login contains a space, or it is empty");
         }
     }
