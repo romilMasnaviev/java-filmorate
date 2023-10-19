@@ -25,7 +25,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User updateUser(User user) {
         User newUser = validateUser(user);
-        if (newUser.getFriendsId()==null){
+        if (newUser.getFriendsId() == null) {
             newUser.setFriendsId(new HashSet<>());
         }
         if (storage.containsKey(newUser.getId())) {
@@ -41,12 +41,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User getUser(int userId) {
-        if (storage.containsKey(userId)){
+        if (storage.containsKey(userId)) {
             return storage.get(userId);
         } else throw new NotFoundException("User not found");
     }
 
-    public boolean containsUser(int userId){
+    public boolean containsUser(int userId) {
         return storage.containsKey(userId);
     }
 

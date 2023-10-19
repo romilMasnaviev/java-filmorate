@@ -22,15 +22,15 @@ public class FilmService {
 
     public void likeFilm(int id, int userId) {
         if (storage.containsFilm(id)) {
-            if(userId >0){
+            if (userId > 0) {
                 storage.getFilm(id).getLikes().add(userId);
             } else throw new NotFoundException("There is no user with this id");
         } else throw new NotFoundException("There is no movie with this id");
     }
 
     public void unLikeFilm(int id, int userId) {
-        if (storage.containsFilm(id)){
-            if(userId >0){
+        if (storage.containsFilm(id)) {
+            if (userId > 0) {
                 storage.getFilm(id).getLikes().remove(userId);
             } else throw new NotFoundException("There is no user with this id");
         } else throw new NotFoundException("There is no movie with this id");

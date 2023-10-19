@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public void addFriend(int id, int friendId) {
-        if (id < 1 | friendId < 1){
+        if (id < 1 | friendId < 1) {
             throw new NotFoundException("wrong friend id");
         }
         if (storage.containsUser(id) || storage.containsUser(friendId)) {
@@ -32,14 +32,14 @@ public class UserService {
         }
     }
 
-    public void updateFriends(){
-        for (User user: storage.getAllUsers()) {
-            if (user.getFriendsId()==null){
+    public void updateFriends() {
+        for (User user : storage.getAllUsers()) {
+            if (user.getFriendsId() == null) {
                 user.setFriendsId(new HashSet<>());
             }
             Set<Integer> userFriends = user.getFriendsId();
 
-            for (Integer friendsId: userFriends) {
+            for (Integer friendsId : userFriends) {
                 storage.getUser(friendsId).getFriendsId().add(user.getId());
             }
         }
@@ -56,17 +56,17 @@ public class UserService {
 
     public List<User> getFriends(int id) {
         Set<User> friendsList = new HashSet<>();
-        if (storage.containsUser(id)){
-                for (Integer userId : storage.getUser(id).getFriendsId()) {
-                    friendsList.add(storage.getUser(userId));
-                }
+        if (storage.containsUser(id)) {
+            for (Integer userId : storage.getUser(id).getFriendsId()) {
+                friendsList.add(storage.getUser(userId));
+            }
         }
         return friendsList.stream().sorted(Comparator.comparing(User::getId))
                 .collect(Collectors.toList());
     }
 
     public Set<User> getSameFriends(int id, int otherId) {
-        if ( storage.containsUser(id) & storage.containsUser(otherId)){
+        if (storage.containsUser(id) & storage.containsUser(otherId)) {
             return getFriends(id).stream()
                     .filter(getFriends(otherId)::contains)
                     .collect(Collectors.toSet());
