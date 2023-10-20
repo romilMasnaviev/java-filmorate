@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -24,12 +23,13 @@ public class UserService {
 
     public void addFriend(int id, int friendId) {
         if (id < 1 | friendId < 1) {
-            throw new ValidationException("wrong friend id");
+            throw new NotFoundException("wrong friend id");
         }
         if (storage.containsUser(id) || storage.containsUser(friendId)) {
             storage.getUser(id).getFriendsId().add(friendId);
             storage.getUser(friendId).getFriendsId().add(id);
         }
+        updateFriends();
     }
 
     public void updateFriends() {
@@ -52,6 +52,7 @@ public class UserService {
         if (storage.containsUser(friendId)) {
             storage.getUser(friendId).getFriendsId().remove(id);
         }
+        updateFriends();
     }
 
     public List<User> getFriends(int id) {
@@ -61,25 +62,26 @@ public class UserService {
                 friendsList.add(storage.getUser(userId));
             }
         }
-        return friendsList.stream().sorted(Comparator.comparing(User::getId))
-                .collect(Collectors.toList());
+        return friendsList.stream().sorted(Comparator.comparing(User::getId)).collect(Collectors.toList());
     }
 
     public Set<User> getSameFriends(int id, int otherId) {
         if (storage.containsUser(id) & storage.containsUser(otherId)) {
-            return getFriends(id).stream()
-                    .filter(getFriends(otherId)::contains)
-                    .collect(Collectors.toSet());
+            return getFriends(id).stream().filter(getFriends(otherId)::contains).collect(Collectors.toSet());
         } else throw new NotFoundException("Some of the friends are not there");
 
     }
 
     public User addUser(User user) {
-        return storage.addUser(user);
+        User newUser = storage.addUser(user);
+        updateFriends();
+        return newUser;
     }
 
     public User updateUser(User user) {
-        return storage.updateUser(user);
+        User newUser = storage.updateUser(user);
+        updateFriends();
+        return newUser;
     }
 
     public List<User> getAllUsers() {

@@ -20,17 +20,13 @@ public class UserController {
     @PostMapping
     public User addUser(@RequestBody User user) {
         log.info("Received request to add new user");
-        User newUser = service.addUser(user);
-        service.updateFriends();
-        return newUser;
+        return service.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
         log.info("Received request to update user");
-        User newUser = service.updateUser(user);
-        service.updateFriends();
-        return newUser;
+        return service.updateUser(user);
     }
 
     @GetMapping
@@ -48,14 +44,12 @@ public class UserController {
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Received request to add friend");
         service.addFriend(id, friendId);
-        service.updateFriends();
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Received request to remove friend");
         service.removeFriend(id, friendId);
-        service.updateFriends();
     }
 
     @GetMapping("/{id}/friends")
