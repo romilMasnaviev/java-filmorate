@@ -24,7 +24,7 @@ public class UserService {
 
     public void addFriend(int id, int friendId) {
         if (id < 1 | friendId < 1) {
-            throw new NotFoundException("wrong friend id");
+            throw new ValidationException("wrong friend id");
         }
         if (storage.containsUser(id) || storage.containsUser(friendId)) {
             storage.getUser(id).getFriendsId().add(friendId);
@@ -70,7 +70,23 @@ public class UserService {
             return getFriends(id).stream()
                     .filter(getFriends(otherId)::contains)
                     .collect(Collectors.toSet());
-        } else throw new ValidationException("Some of the friends are not there");
+        } else throw new NotFoundException("Some of the friends are not there");
 
+    }
+
+    public User addUser(User user) {
+        return storage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        return storage.updateUser(user);
+    }
+
+    public List<User> getAllUsers() {
+        return storage.getAllUsers();
+    }
+
+    public User getUser(int id) {
+        return storage.getUser(id);
     }
 }

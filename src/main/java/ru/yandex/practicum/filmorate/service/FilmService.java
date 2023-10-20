@@ -48,4 +48,19 @@ public class FilmService {
         return sortedFilms;
     }
 
+    public Film addFilm(Film film) {
+        return storage.addFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return storage.updateFilm(film);
+    }
+
+    public List<Film> getAllFilms() {
+        return storage.getAllFilms();
+    }
+
+    public Film getFilm(int id) {
+        return storage.getFilm(id);
+    }
 }
