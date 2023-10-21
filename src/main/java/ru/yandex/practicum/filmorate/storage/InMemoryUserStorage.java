@@ -17,12 +17,14 @@ public class InMemoryUserStorage implements UserStorage {
     private final HashMap<Integer, User> storage = new HashMap<>();
     private int id = 1;
 
+    @Override
     public User addUser(User user) {
         User userWithId = validateUser(user).toBuilder().id(id++).friendsId(new HashSet<>()).build();
         storage.put(userWithId.getId(), userWithId);
         return userWithId;
     }
 
+    @Override
     public User updateUser(User user) {
         User newUser = validateUser(user);
         if (newUser.getFriendsId() == null) {
@@ -36,16 +38,19 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
+    @Override
     public User deleteUser(int userId) {
         return storage.remove(userId);
     }
 
+    @Override
     public User getUser(int userId) {
         if (storage.containsKey(userId)) {
             return storage.get(userId);
         } else throw new NotFoundException("User not found");
     }
 
+    @Override
     public boolean containsUser(int userId) {
         return storage.containsKey(userId);
     }

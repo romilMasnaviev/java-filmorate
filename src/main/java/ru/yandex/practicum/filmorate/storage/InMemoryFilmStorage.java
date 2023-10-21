@@ -19,6 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> storage = new HashMap<>();
     private int id = 1;
 
+    @Override
     public Film addFilm(Film film) {
         Film filmWithId = validateFilm(film).toBuilder().id(id++).build();
         if (filmWithId.getLikes() == null) {
@@ -28,6 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmWithId;
     }
 
+    @Override
     public Film updateFilm(Film film) {
         Film newFilm = validateFilm(film);
         if (newFilm.getLikes() == null) {
@@ -41,21 +43,31 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
+    @Override
     public Film deleteFilm(int filmId) {
-        //TODO
-        return null;
+        Film film;
+        if (storage.containsKey(filmId)){
+            film = storage.get(filmId);
+            storage.remove(filmId);
+        } else {
+            throw new NotFoundException("There is no such film in the library");
+        }
+        return film;
     }
 
+    @Override
     public Film getFilm(int filmId) {
         if (storage.containsKey(filmId)) {
             return storage.get(filmId);
         } else throw new NotFoundException("There is no movie with such an id");
     }
 
+    @Override
     public List<Film> getAllFilms() {
         return new ArrayList<>(storage.values());
     }
 
+    @Override
     public boolean containsFilm(int filmId) {
         return storage.containsKey(filmId);
     }
