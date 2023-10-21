@@ -1,85 +1,67 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.util.GsonUtil;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController()
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private final HashMap<Integer, User> userStorage = new HashMap<>();
-    private int id = 1;
+    private final UserService service;
 
     @PostMapping
-    public User addUser(@RequestBody String gsonString) {
+    public User addUser(@RequestBody User user) {
         log.info("Received request to add new user");
-        User userWithId = validateUser(gsonString).toBuilder().id(id++).build();
-        userStorage.put(userWithId.getId(), userWithId);
-        log.info("User added successfully: {}", userWithId);
-        return userWithId;
+        return service.addUser(user);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody String gsonString) {
+    public User updateUser(@RequestBody User user) {
         log.info("Received request to update user");
-        User newUser = validateUser(gsonString);
-        if (userStorage.containsKey(newUser.getId())) {
-            userStorage.put(newUser.getId(), newUser);
-            log.info("User updated successfully: {}", newUser);
-            return newUser;
-        } else {
-            log.error("Failed to update User: User with ID {} doesnt exists", newUser.getId());
-            throw new NotFoundException("There is no such user in the library");
-        }
+        return service.updateUser(user);
     }
 
     @GetMapping
     public List<User> getAllUsers() {
         log.info("Received request to get all users");
-        return new ArrayList<>(userStorage.values());
+        return service.getAllUsers();
     }
 
-    private User validateUser(String gsonString) {
-        User user = GsonUtil.fromJson(gsonString, User.class);
-        isValidMail(user);
-        isValidLogin(user);
-        isValidBirthday(user);
-        isNullName(user);
-        return user;
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        return service.getUser(id);
     }
 
-    private void isNullName(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Received request to add friend");
+        service.addFriend(id, friendId);
     }
 
-    private void isValidMail(User user) {
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("The email does not contain @");
-        }
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Received request to remove friend");
+        service.removeFriend(id, friendId);
     }
 
-    private void isValidLogin(User user) {
-        if ((user.getLogin().contains(" ") | user.getLogin().isEmpty())) {
-            throw new ValidationException("The login contains a space, or it is empty");
-        }
+    @GetMapping("/{id}/friends")
+    public List<User> getFriendsList(@PathVariable int id) {
+        log.info("Received request to get friends list");
+        return service.getFriends(id);
     }
 
-    private void isValidBirthday(User user) {
-        if (!user.getBirthday().isBefore(LocalDate.now())) {
-            throw new ValidationException("The birthday later today");
-        }
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Set<User> getSameFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Received request to get same friend list");
+        return service.getSameFriends(id, otherId);
     }
 
 }
