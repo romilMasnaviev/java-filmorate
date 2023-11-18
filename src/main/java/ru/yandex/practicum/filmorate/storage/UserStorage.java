@@ -8,7 +8,7 @@ public interface UserStorage {
 
     User addUser(User user);
 
-    User updateUser(User user);
+    User updateUser(User user) throws Exception;
 
     User deleteUser(int userId);
 

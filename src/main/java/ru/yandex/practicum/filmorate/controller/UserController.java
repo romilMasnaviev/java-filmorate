@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@RequestBody User user) throws Exception {
         log.info("Received request to update user");
         return service.updateUser(user);
     }
