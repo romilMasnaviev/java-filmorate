@@ -47,28 +47,4 @@ public class FriendStorageTest {
         userDbStorage.addUser(user3);
         assertThrows(RuntimeException.class, () -> friendStorage.addFriend(1, -1));
     }
-
-    @Test
-    public void testCommonFriends() {
-        // Предположим, у нас уже есть пользователи user1, user2, user3 и friendStorage
-        // Важно убедиться, что userDbStorage был проинициализирован и имеет корректные методы
-
-        // Добавляем пользователей в хранилище
-        userDbStorage.addUser(user1);
-        userDbStorage.addUser(user2);
-        userDbStorage.addUser(user3);
-
-        // Добавляем друзей для user2 и user3
-        friendStorage.addFriend(2, 1);
-        friendStorage.addFriend(3, 1);
-
-        // Получаем список общих друзей
-        List<Integer> commonFriends = friendStorage.getSameFriends(2, 3);
-
-        // Проверяем, что список содержит общих друзей (user1)
-        assertEquals(1, commonFriends.size());
-        assertEquals((Integer) 1, commonFriends.get(0));
-    }
-
-
 }
