@@ -13,11 +13,30 @@ CREATE TABLE IF NOT EXISTS mpa
     mpa_name VARCHAR(255)
 );
 
+ALTER TABLE mpa ALTER COLUMN mpa_id RESTART WITH 1;
+
+INSERT INTO mpa (MPA_NAME)
+VALUES
+    ('G'),
+    ('PG'),
+    ('PG-13'),
+    ('R'),
+    ('NC-17');
+
 CREATE TABLE IF NOT EXISTS genres
 (
     genre_id   INT PRIMARY KEY AUTO_INCREMENT,
     genre_name VARCHAR(255)
 );
+
+INSERT INTO genres (genre_name)
+VALUES
+    ('Комедия'),
+    ('Драма'),
+    ('Мультфильм'),
+    ('Триллер'),
+    ('Документальный'),
+    ('Боевик');
 
 CREATE TABLE IF NOT EXISTS films
 (
@@ -31,6 +50,8 @@ CREATE TABLE IF NOT EXISTS films
     FOREIGN KEY (film_mpa_id) REFERENCES mpa (mpa_id)
 );
 
+ALTER TABLE films ALTER COLUMN film_id RESTART WITH 1; //TODO
+
 CREATE TABLE IF NOT EXISTS film_genres
 (
     film_id  INT,
@@ -40,6 +61,9 @@ CREATE TABLE IF NOT EXISTS film_genres
     FOREIGN KEY (genre_id) REFERENCES genres (genre_id)
 );
 
+ALTER TABLE films ALTER COLUMN film_id RESTART WITH 1; //TODO
+
+
 CREATE TABLE IF NOT EXISTS users
 (
     user_id       INT PRIMARY KEY AUTO_INCREMENT,
@@ -48,6 +72,7 @@ CREATE TABLE IF NOT EXISTS users
     user_name     VARCHAR(255),
     user_birthday DATE
 );
+ALTER TABLE films ALTER COLUMN film_id RESTART WITH 1; //TODO
 
 ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1;
 
@@ -59,6 +84,8 @@ CREATE TABLE IF NOT EXISTS friends
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (friend_id) REFERENCES users (user_id)
 );
+ALTER TABLE films ALTER COLUMN film_id RESTART WITH 1; //TODO
+
 
 CREATE TABLE IF NOT EXISTS likes
 (
@@ -68,3 +95,6 @@ CREATE TABLE IF NOT EXISTS likes
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (film_id) REFERENCES films (film_id)
 );
+ALTER TABLE films ALTER COLUMN film_id RESTART WITH 1; //TODO
+
+

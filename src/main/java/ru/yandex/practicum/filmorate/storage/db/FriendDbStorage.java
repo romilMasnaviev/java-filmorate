@@ -19,21 +19,28 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public void addFriend(int id, int friendId) {
-
+        String sqlAdd = "INSERT INTO friends (user_id , friend_id) VALUES ( ?, ?)";
+        jdbcTemplate.update(sqlAdd,id,friendId);
     }
 
     @Override
     public void removeFriend(int id, int friendId) {
-
+        String sqlDelete = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
+        jdbcTemplate.update(sqlDelete, id, friendId);
     }
 
     @Override
-    public List<User> getFriendsList(int id) {
-        return null;
+    public List<Integer> getFriendsList(int id) {
+        String sqlGetId = "SELECT friend_id FROM friends WHERE user_id = ?";
+        return jdbcTemplate.queryForList(sqlGetId, Integer.class,id);
     }
 
     @Override
-    public Set<User> getSameFriends(int id, int otherId) {
-        return null;
+    public List<Integer> getSameFriends(int id, int otherId) {
+        String sqlGetSame = "SELECT f1.friend_id " +
+                "FROM friends f1 " +
+                "JOIN friends f2 ON f1.friend_id = f2.friend_id " +
+                "WHERE f1.user_id = ? AND f2.user_id = ?";
+        return jdbcTemplate.queryForList(sqlGetSame, Integer.class,id,otherId);
     }
 }

@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getSameFriends(@PathVariable int id, @PathVariable int otherId) {
+    public List<User> getSameFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Received request to get same friend list");
         return service.getSameFriends(id, otherId);
     }
