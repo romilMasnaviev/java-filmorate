@@ -87,7 +87,7 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
             jdbcTemplate.update(sqlDelete, filmId);
             return film;
         } else {
-            throw new NotFoundException("There is not this film in storage")
+            throw new NotFoundException("There is not this film in storage");
         }
     }
 
