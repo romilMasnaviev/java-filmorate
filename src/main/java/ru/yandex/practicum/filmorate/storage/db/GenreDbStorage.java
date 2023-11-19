@@ -79,7 +79,6 @@ public class GenreDbStorage implements GenreStorage {
             if (genre.getId() != 0) {
                 jdbcTemplate.update(insertSql, newFilm.getId(), genre.getId());
             }
-
         }
         return getFilmsGenres(newFilm.getId());
     }
