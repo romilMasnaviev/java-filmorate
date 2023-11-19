@@ -25,17 +25,9 @@ public class GenreDbStorageTest {
 
     private static final List<Genre> genres = new ArrayList<>();
     private final JdbcTemplate jdbcTemplate;
-
+    Film film1 = Film.builder().name("Inception").description("A thief who steals corporate secrets through the use of dream-sharing technology").releaseDate(LocalDate.of(2010, 7, 16)).duration(148).mpa(Mpa.builder().id(1).build()).build();
     private GenreDbStorage genreDbStorage;
     private FilmDbStorage filmDbStorage;
-
-    Film film1 = Film.builder()
-            .name("Inception")
-            .description("A thief who steals corporate secrets through the use of dream-sharing technology")
-            .releaseDate(LocalDate.of(2010, 7, 16))
-            .duration(148)
-            .mpa(Mpa.builder().id(1).build())
-            .build();
 
     @BeforeAll
     static void setup() {
@@ -64,7 +56,7 @@ public class GenreDbStorageTest {
     }
 
     @Test
-    void updateTest(){
+    void updateTest() {
         Film film = film1;
 
         //добавляем жанры
@@ -73,13 +65,13 @@ public class GenreDbStorageTest {
         filmDbStorage.addFilm(film);
 
         //обновляем жанры
-        film.setGenres(genres.subList(0,2));
+        film.setGenres(genres.subList(0, 2));
 
         //обновляем фильм
         genreDbStorage.update(film);
 
-        Film newFilm = film1.toBuilder().genres(genres.subList(0,2)).build();
-        assertEquals(newFilm.getGenres(),genreDbStorage.getFilmsGenres(1));
+        Film newFilm = film1.toBuilder().genres(genres.subList(0, 2)).build();
+        assertEquals(newFilm.getGenres(), genreDbStorage.getFilmsGenres(1));
     }
 
 }

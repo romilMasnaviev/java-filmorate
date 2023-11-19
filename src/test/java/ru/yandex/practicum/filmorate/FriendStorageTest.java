@@ -22,29 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FriendStorageTest {
 
     private final JdbcTemplate jdbcTemplate;
+    User user1 = User.builder().login("john_doe").email("john@example.com").name("John Doe").birthday(LocalDate.of(1985, 5, 12)).build();
+    User user2 = User.builder().login("jane_doe").email("jane@example.com").name("Jane Doe").birthday(LocalDate.of(1990, 8, 25)).build();
+    User user3 = User.builder().login("bob_smith").email("bob@example.com").name("Bob Smith").birthday(LocalDate.of(1982, 3, 17)).build();
     private UserDbStorage userDbStorage;
     private FriendDbStorage friendStorage;
-    User user1 = User.builder()
-            .login("john_doe")
-            .email("john@example.com")
-            .name("John Doe")
-            .birthday(LocalDate.of(1985, 5, 12))
-            .build();
-    User user2 = User.builder()
-            .login("jane_doe")
-            .email("jane@example.com")
-            .name("Jane Doe")
-            .birthday(LocalDate.of(1990, 8, 25))
-            .build();
-    User user3 = User.builder()
-            .login("bob_smith")
-            .email("bob@example.com")
-            .name("Bob Smith")
-            .birthday(LocalDate.of(1982, 3, 17))
-            .build();
 
     @BeforeEach
-    void setup(){
+    void setup() {
         userDbStorage = new UserDbStorage(jdbcTemplate);
         friendStorage = new FriendDbStorage(jdbcTemplate);
     }
@@ -60,10 +45,7 @@ public class FriendStorageTest {
         userDbStorage.addUser(user1);
         userDbStorage.addUser(user2);
         userDbStorage.addUser(user3);
-        assertThrows(
-                RuntimeException.class,
-                () -> friendStorage.addFriend(1,-1)
-        );
+        assertThrows(RuntimeException.class, () -> friendStorage.addFriend(1, -1));
     }
 
     @Test

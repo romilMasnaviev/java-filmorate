@@ -23,13 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LikeDbStorageTest {
 
     private final JdbcTemplate jdbcTemplate;
-    Film film1 = Film.builder()
-            .name("Inception")
-            .description("A thief who steals corporate secrets through the use of dream-sharing technology")
-            .releaseDate(LocalDate.of(2010, 7, 16))
-            .duration(148)
-            .mpa(Mpa.builder().id(1).build())
-            .build();
+    Film film1 = Film.builder().name("Inception").description("A thief who steals corporate secrets through the use of dream-sharing technology").releaseDate(LocalDate.of(2010, 7, 16)).duration(148).mpa(Mpa.builder().id(1).build()).build();
     Film film2 = Film.builder()
             .name("The Shawshank Redemption")
             .description("Two imprisoned men bond over a number of years, finding solace and eventual redemption")

@@ -18,36 +18,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MpaDbStorageTest {
 
-    private MpaDbStorage mpaDbStorage;
     private final JdbcTemplate jdbcTemplate;
+    private MpaDbStorage mpaDbStorage;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         mpaDbStorage = new MpaDbStorage(jdbcTemplate);
     }
 
     @Test
-    void getMpaTest(){
-        Mpa mpa = Mpa.builder()
-                .id(1)
-                .name("G")
-                .build();
-        assertEquals(mpa,mpaDbStorage.getMpa(1));
+    void getMpaTest() {
+        Mpa mpa = Mpa.builder().id(1).name("G").build();
+        assertEquals(mpa, mpaDbStorage.getMpa(1));
     }
 
     @Test
-    void getAllMpa(){
-        Mpa mpa1 =  Mpa.builder().id(1).name("G").build();
-        Mpa mpa2 =  Mpa.builder().id(2).name("PG").build();
-        Mpa mpa3 =  Mpa.builder().id(3).name("PG-13").build();
-        Mpa mpa4 =  Mpa.builder().id(4).name("R").build();
-        Mpa mpa5 =  Mpa.builder().id(5).name("NC-17").build();
+    void getAllMpa() {
+        Mpa mpa1 = Mpa.builder().id(1).name("G").build();
+        Mpa mpa2 = Mpa.builder().id(2).name("PG").build();
+        Mpa mpa3 = Mpa.builder().id(3).name("PG-13").build();
+        Mpa mpa4 = Mpa.builder().id(4).name("R").build();
+        Mpa mpa5 = Mpa.builder().id(5).name("NC-17").build();
         List<Mpa> mpas = new ArrayList<>();
         mpas.add(mpa1);
         mpas.add(mpa2);
         mpas.add(mpa3);
         mpas.add(mpa4);
         mpas.add(mpa5);
-        assertEquals(mpas,mpaDbStorage.getAllMpa());
+        assertEquals(mpas, mpaDbStorage.getAllMpa());
     }
 }
