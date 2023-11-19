@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -52,9 +51,7 @@ public class FilmDbStorageTest {
                 .releaseDate(LocalDate.of(1900, 3, 25))
                 .mpa(Mpa.builder().id(1).build())
                 .build();
-        assertThrows(ValidationException.class, () -> {
-            filmDbStorage.addFilm(invalidFilm);
-        });
+        assertThrows(ValidationException.class, () -> filmDbStorage.addFilm(invalidFilm));
     }
 
     @Test
@@ -66,9 +63,7 @@ public class FilmDbStorageTest {
                 .releaseDate(LocalDate.of(1890, 3, 25))
                 .mpa(Mpa.builder().id(1).build())
                 .build();
-        assertThrows(ValidationException.class, () -> {
-            filmDbStorage.addFilm(invalidFilm);
-        });
+        assertThrows(ValidationException.class, () -> filmDbStorage.addFilm(invalidFilm));
     }
 
     @Test
