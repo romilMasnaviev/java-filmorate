@@ -22,6 +22,7 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     public Genre getGenre(int genreId) {
+
         String sql = "SELECT * FROM genres WHERE genre_id = ?";
         List<Genre> genres = jdbcTemplate.query(sql, new Object[]{genreId}, (rs, rowNum) ->
                 Genre.builder()
