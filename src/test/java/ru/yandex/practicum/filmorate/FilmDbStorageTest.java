@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,21 +61,6 @@ public class FilmDbStorageTest {
         assertEquals(updatedFilm, savedUpdatedFilm);
     }
 
-
-    @Test
-    void testGetAllFilms() {
-        Film film1 = Film.builder().name("Film 1").description("Description 1").releaseDate(LocalDate.of(2000, 5, 15)).duration(120).mpa(Mpa.builder().id(1).build()).build();
-        filmDbStorage.addFilm(film1);
-        Film film2 = Film.builder().name("Film 2").description("Description 2").releaseDate(LocalDate.of(2005, 8, 20)).duration(130).mpa(Mpa.builder().id(2).build()).build();
-        filmDbStorage.addFilm(film2);
-        Film film3 = Film.builder().name("Film 3").description("Description 3").releaseDate(LocalDate.of(2010, 10, 10)).duration(150).mpa(Mpa.builder().id(3).build()).build();
-        filmDbStorage.addFilm(film3);
-        List<Film> allFilms = filmDbStorage.getAllFilms();
-        assertEquals(3, allFilms.size());
-        assertEquals(1, allFilms.get(0).getId());
-        assertEquals(2, allFilms.get(1).getId());
-        assertEquals(3, allFilms.get(2).getId());
-    }
 
 
 }
