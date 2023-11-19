@@ -20,9 +20,4 @@ public class ErrorHandler {
         return new ErrorResponse("notFoundException : " + e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse serverException(final  ServerException e){
-        return new ErrorResponse("serverException : " + e.getMessage());
-    }
 }

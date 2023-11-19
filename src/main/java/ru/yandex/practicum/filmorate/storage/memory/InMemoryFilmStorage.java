@@ -73,7 +73,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return storage.containsKey(filmId);
     }
 
-    private Film validateFilm(Film film) {
+    protected Film validateFilm(Film film) {
         isValidName(film);
         isValidDescription(film);
         isValidDuration(film);

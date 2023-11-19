@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.db;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ServerException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -31,16 +30,18 @@ public class UserDbStorage implements UserStorage {
                 user.getBirthday());
         if (rowsAffected > 0) {
             String sqlSelect = "SELECT TOP 1 user_id FROM users ORDER BY user_id DESC";
-            int userId = jdbcTemplate.queryForObject(sqlSelect, Integer.class);
-            user.setId(userId);
-            return user;
-        } else {
-            throw new RuntimeException("Failed to add new user");
+            Integer userId = jdbcTemplate.queryForObject(sqlSelect, Integer.class);
+            if (userId != null) {
+                user.setId(userId);
+                return user;
+            }
+
         }
+        throw new RuntimeException("Failed to add new user");
     }
 
     @Override
-    public User updateUser(User user) throws Exception {
+    public User updateUser(User user) {
         validateUser(user);
         if (getUser(user.getId()) == null) {
             throw new NotFoundException("Failed to update user with id " + user.getId());
@@ -68,7 +69,7 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlDelete, userId);
             return user;
         } else {
-            return null; //TODO throw exception
+            throw new NotFoundException("User with this id does not exist");
         }
     }
 

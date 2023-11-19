@@ -2,16 +2,14 @@ package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class FriendDbStorage implements FriendStorage {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public FriendDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -20,7 +18,7 @@ public class FriendDbStorage implements FriendStorage {
     @Override
     public void addFriend(int id, int friendId) {
         String sqlAdd = "INSERT INTO friends (user_id , friend_id) VALUES ( ?, ?)";
-        jdbcTemplate.update(sqlAdd,id,friendId);
+        jdbcTemplate.update(sqlAdd, id, friendId);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class FriendDbStorage implements FriendStorage {
     @Override
     public List<Integer> getFriendsList(int id) {
         String sqlGetId = "SELECT friend_id FROM friends WHERE user_id = ?";
-        return jdbcTemplate.queryForList(sqlGetId, Integer.class,id);
+        return jdbcTemplate.queryForList(sqlGetId, Integer.class, id);
     }
 
     @Override
@@ -41,6 +39,6 @@ public class FriendDbStorage implements FriendStorage {
                 "FROM friends f1 " +
                 "JOIN friends f2 ON f1.friend_id = f2.friend_id " +
                 "WHERE f1.user_id = ? AND f2.user_id = ?";
-        return jdbcTemplate.queryForList(sqlGetSame, Integer.class,id,otherId);
+        return jdbcTemplate.queryForList(sqlGetSame, Integer.class, id, otherId);
     }
 }
