@@ -24,11 +24,7 @@ public class GenreDbStorage implements GenreStorage {
     public Genre getGenre(int genreId) {
 
         String sql = "SELECT * FROM genres WHERE genre_id = ?";
-        List<Genre> genres = jdbcTemplate.query(sql, new Object[]{genreId}, (rs, rowNum) ->
-                Genre.builder()
-                        .id(rs.getInt("genre_id"))
-                        .name(rs.getString("genre_name"))
-                        .build());
+        List<Genre> genres = jdbcTemplate.query(sql, new Object[]{genreId}, (rs, rowNum) -> Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("genre_name")).build());
         if (genres.size() == 1) {
             return genres.get(0);
         } else {
@@ -38,11 +34,7 @@ public class GenreDbStorage implements GenreStorage {
 
     public List<Genre> getAllGenres() {
         String sql = "SELECT * FROM genres";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                Genre.builder()
-                        .id(rs.getInt("genre_id"))
-                        .name(rs.getString("genre_name"))
-                        .build());
+        return jdbcTemplate.query(sql, (rs, rowNum) -> Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("genre_name")).build());
     }
 
     public List<Genre> addGenreToFilm(List<Genre> genres, int filmId) {
@@ -58,15 +50,9 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     public List<Genre> getFilmsGenres(int filmId) {
-        String sql = "SELECT g.genre_id, g.genre_name " +
-                "FROM genres g " +
-                "INNER JOIN film_genres fg ON g.genre_id = fg.genre_id " +
-                "WHERE fg.film_id = ?";
+        String sql = "SELECT g.genre_id, g.genre_name " + "FROM genres g " + "INNER JOIN film_genres fg ON g.genre_id = fg.genre_id " + "WHERE fg.film_id = ?";
 
-        return jdbcTemplate.query(sql, new Object[]{filmId}, (rs, rowNum) ->
-                Genre.builder()
-                        .id(rs.getInt("genre_id"))
-                        .name(rs.getString("genre_name")).build());
+        return jdbcTemplate.query(sql, new Object[]{filmId}, (rs, rowNum) -> Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("genre_name")).build());
     }
 
     @Override

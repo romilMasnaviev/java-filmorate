@@ -18,11 +18,7 @@ public class MpaDbStorage implements MpaStorage {
 
     public Mpa getMpa(int mpaId) {
         String sql = "SELECT * FROM mpa WHERE mpa_id = ?";
-        List<Mpa> mpa = jdbcTemplate.query(sql, new Object[]{mpaId}, (rs, rowNum) ->
-                Mpa.builder()
-                        .id(rs.getInt("mpa_id"))
-                        .name(rs.getString("mpa_name"))
-                        .build());
+        List<Mpa> mpa = jdbcTemplate.query(sql, new Object[]{mpaId}, (rs, rowNum) -> Mpa.builder().id(rs.getInt("mpa_id")).name(rs.getString("mpa_name")).build());
         if (mpa.size() == 1) {
             return mpa.get(0);
         } else {
@@ -32,10 +28,6 @@ public class MpaDbStorage implements MpaStorage {
 
     public List<Mpa> getAllMpa() {
         String sql = "SELECT * FROM mpa";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                Mpa.builder()
-                        .id(rs.getInt("mpa_id"))
-                        .name(rs.getString("mpa_name"))
-                        .build());
+        return jdbcTemplate.query(sql, (rs, rowNum) -> Mpa.builder().id(rs.getInt("mpa_id")).name(rs.getString("mpa_name")).build());
     }
 }

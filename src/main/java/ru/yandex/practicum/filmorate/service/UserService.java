@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -47,7 +47,7 @@ public class UserService {
         if (id < 1) {
             throw new NotFoundException("wrong friend id");
         }
-        return friendStorage.getSameFriends(id,otherId);
+        return friendStorage.getSameFriends(id, otherId);
     }
 
     public User addUser(User user) {

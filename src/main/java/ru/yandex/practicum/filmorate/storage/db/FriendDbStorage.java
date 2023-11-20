@@ -32,18 +32,8 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public List<User> getFriendsList(int id) {
-        String sqlGetId = "SELECT u.user_id, u.user_email, u.user_login, u.user_name, u.user_birthday " +
-                "FROM users u " +
-                "JOIN friends f ON u.user_id = f.friend_id " +
-                "WHERE f.user_id = ?";
-        return jdbcTemplate.query(sqlGetId, new Object[]{id}, (rs, rowNum) -> User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("user_email"))
-                .login(rs.getString("user_login"))
-                .name(rs.getString("user_name"))
-                .birthday(rs.getDate("user_birthday").toLocalDate())
-                .friendsId(getFriendsIds(rs.getInt("user_id")))
-                .build());
+        String sqlGetId = "SELECT u.user_id, u.user_email, u.user_login, u.user_name, u.user_birthday " + "FROM users u " + "JOIN friends f ON u.user_id = f.friend_id " + "WHERE f.user_id = ?";
+        return jdbcTemplate.query(sqlGetId, new Object[]{id}, (rs, rowNum) -> User.builder().id(rs.getInt("user_id")).email(rs.getString("user_email")).login(rs.getString("user_login")).name(rs.getString("user_name")).birthday(rs.getDate("user_birthday").toLocalDate()).friendsId(getFriendsIds(rs.getInt("user_id"))).build());
     }
 
     private Set<Integer> getFriendsIds(int userId) {
@@ -54,18 +44,7 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public List<User> getSameFriends(int id, int otherId) {
-        String sqlGetSame = "SELECT u.user_id, u.user_email, u.user_login, u.user_name, u.user_birthday " +
-                "FROM users u " +
-                "JOIN friends f1 ON u.user_id = f1.friend_id " +
-                "JOIN friends f2 ON f1.friend_id = f2.friend_id " +
-                "WHERE f1.user_id = ? AND f2.user_id = ?";
-        return jdbcTemplate.query(sqlGetSame, new Object[]{id, otherId}, (rs, rowNum) -> User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("user_email"))
-                .login(rs.getString("user_login"))
-                .name(rs.getString("user_name"))
-                .birthday(rs.getDate("user_birthday").toLocalDate())
-                .friendsId(getFriendsIds(rs.getInt("user_id")))
-                .build());
+        String sqlGetSame = "SELECT u.user_id, u.user_email, u.user_login, u.user_name, u.user_birthday " + "FROM users u " + "JOIN friends f1 ON u.user_id = f1.friend_id " + "JOIN friends f2 ON f1.friend_id = f2.friend_id " + "WHERE f1.user_id = ? AND f2.user_id = ?";
+        return jdbcTemplate.query(sqlGetSame, new Object[]{id, otherId}, (rs, rowNum) -> User.builder().id(rs.getInt("user_id")).email(rs.getString("user_email")).login(rs.getString("user_login")).name(rs.getString("user_name")).birthday(rs.getDate("user_birthday").toLocalDate()).friendsId(getFriendsIds(rs.getInt("user_id"))).build());
     }
 }

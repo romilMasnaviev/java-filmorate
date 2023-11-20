@@ -24,15 +24,7 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
     }
 
     public static Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(rs.getInt("film_id"))
-                .name(rs.getString("film_name"))
-                .releaseDate(rs.getDate("film_release_date").toLocalDate())
-                .description(rs.getString("film_description"))
-                .duration(rs.getInt("film_duration"))
-                .rate(rs.getInt("film_rate"))
-                .mpa(Mpa.builder().id(rs.getInt("film_mpa_id")).build())
-                .build();
+        return Film.builder().id(rs.getInt("film_id")).name(rs.getString("film_name")).releaseDate(rs.getDate("film_release_date").toLocalDate()).description(rs.getString("film_description")).duration(rs.getInt("film_duration")).rate(rs.getInt("film_rate")).mpa(Mpa.builder().id(rs.getInt("film_mpa_id")).build()).build();
     }
 
     @Override
@@ -65,17 +57,8 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
         if (getFilm(film.getId()) == null) {
             throw new NotFoundException("Failed to update user with id " + film.getId());
         }
-        String sql = "UPDATE films SET film_name = ? , film_release_date = ?," +
-                "film_description = ? , film_duration = ? , film_rate = ? , film_mpa_id = ? WHERE film_id = ?";
-        int rowsEffected = jdbcTemplate.update(
-                sql,
-                film.getName(),
-                film.getReleaseDate(),
-                film.getDescription(),
-                film.getDuration(),
-                film.getRate(),
-                film.getMpa().getId(),
-                film.getId());
+        String sql = "UPDATE films SET film_name = ? , film_release_date = ?," + "film_description = ? , film_duration = ? , film_rate = ? , film_mpa_id = ? WHERE film_id = ?";
+        int rowsEffected = jdbcTemplate.update(sql, film.getName(), film.getReleaseDate(), film.getDescription(), film.getDuration(), film.getRate(), film.getMpa().getId(), film.getId());
         if (rowsEffected > 0) {
             return film;
         } else {
@@ -109,18 +92,7 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         String sql = "SELECT * FROM films ";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                Film.builder()
-                        .id(rs.getInt("film_id"))
-                        .name(rs.getString("film_name"))
-                        .releaseDate(rs.getDate("film_release_date").toLocalDate())
-                        .description(rs.getString("film_description"))
-                        .duration(rs.getInt("film_duration"))
-                        .rate(rs.getInt("film_rate"))
-                        .mpa(Mpa.builder()
-                                .id(rs.getInt("film_mpa_id"))
-                                .build())
-                        .build());
+        return jdbcTemplate.query(sql, (rs, rowNum) -> Film.builder().id(rs.getInt("film_id")).name(rs.getString("film_name")).releaseDate(rs.getDate("film_release_date").toLocalDate()).description(rs.getString("film_description")).duration(rs.getInt("film_duration")).rate(rs.getInt("film_rate")).mpa(Mpa.builder().id(rs.getInt("film_mpa_id")).build()).build());
     }
 
     @Override

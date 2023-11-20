@@ -23,11 +23,7 @@ public class UserDbStorage implements UserStorage {
     public User addUser(User user) {
         validateUser(user);
         String sqlInsert = "INSERT INTO users (user_email, user_login, user_name, user_birthday) VALUES (?, ?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sqlInsert,
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday());
+        int rowsAffected = jdbcTemplate.update(sqlInsert, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
         if (rowsAffected > 0) {
             String sqlSelect = "SELECT TOP 1 user_id FROM users ORDER BY user_id DESC";
             Integer userId = jdbcTemplate.queryForObject(sqlSelect, Integer.class);
@@ -47,13 +43,7 @@ public class UserDbStorage implements UserStorage {
             throw new NotFoundException("Failed to update user with id " + user.getId());
         }
         String sqlUpdate = "UPDATE users SET user_email = ?, user_login = ?, user_name = ?, user_birthday = ? WHERE user_id = ?";
-        int rowsAffected = jdbcTemplate.update(
-                sqlUpdate,
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday(),
-                user.getId());
+        int rowsAffected = jdbcTemplate.update(sqlUpdate, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
         if (rowsAffected > 0) {
             return user;
         } else {
@@ -76,26 +66,13 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                User.builder()
-                        .id(rs.getInt("user_id"))
-                        .email(rs.getString("user_email"))
-                        .login(rs.getString("user_login"))
-                        .name(rs.getString("user_name"))
-                        .birthday(rs.getDate("user_birthday")
-                                .toLocalDate()).build());
+        return jdbcTemplate.query(sql, (rs, rowNum) -> User.builder().id(rs.getInt("user_id")).email(rs.getString("user_email")).login(rs.getString("user_login")).name(rs.getString("user_name")).birthday(rs.getDate("user_birthday").toLocalDate()).build());
     }
 
     @Override
     public User getUser(int userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
-        List<User> users = jdbcTemplate.query(sql, new Object[]{userId}, (rs, rowNum) -> User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("user_email"))
-                .login(rs.getString("user_login"))
-                .name(rs.getString("user_name"))
-                .birthday(rs.getDate("user_birthday").toLocalDate())
-                .build());
+        List<User> users = jdbcTemplate.query(sql, new Object[]{userId}, (rs, rowNum) -> User.builder().id(rs.getInt("user_id")).email(rs.getString("user_email")).login(rs.getString("user_login")).name(rs.getString("user_name")).birthday(rs.getDate("user_birthday").toLocalDate()).build());
         if (users.size() == 1) {
             return users.get(0);
         } else {
