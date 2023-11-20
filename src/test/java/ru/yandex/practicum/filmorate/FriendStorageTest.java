@@ -12,9 +12,7 @@ import ru.yandex.practicum.filmorate.storage.db.FriendDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
