@@ -128,4 +128,9 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
         return getFilm(filmId) != null;
     }
 
+    public int getFilmCount() {
+        String sql = "SELECT COUNT(*) AS filmCount FROM films";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
 }

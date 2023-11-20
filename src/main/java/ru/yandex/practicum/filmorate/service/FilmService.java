@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -12,7 +13,9 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.db.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.LikeStorage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FilmService {
@@ -48,6 +51,45 @@ public class FilmService {
 
     public List<Film> getTopFilms(int size) {
         List<Film> films = likeStorage.getPopular(size);
+        Map<Integer, List<Integer>> filmsGenres = likeStorage.getTopFilmsGenres(size);
+        List<Genre> genres = genreStorage.getAllGenres();
+        for (Film film : films) {
+            List<Integer> genreIds = filmsGenres.get(film.getId());
+            List<Genre> filmGenres = new ArrayList<>();
+            if (genreIds != null) {
+                for (Genre genre : genres) {
+                    if (genreIds.contains(genre.getId())) {
+                        filmGenres.add(genre);
+                    }
+                }
+            }
+            film.setGenres(filmGenres);
+        }
+        List<Mpa> mpa = mpaStorage.getAllMpa();
+        for (Film film : films) {
+            film.setMpa(mpa.get(film.getMpa().getId() - 1));
+
+        }
+        return films;
+    }
+
+    public List<Film> getAllFilms() {
+        List<Film> films = likeStorage.getPopular(filmStorage.getFilmCount());
+        System.out.println(films);
+        Map<Integer, List<Integer>> filmsGenres = likeStorage.getAllFilmsGenres();
+        List<Genre> genres = genreStorage.getAllGenres();
+        for (Film film : films) {
+            List<Integer> genreIds = filmsGenres.get(film.getId());
+            List<Genre> filmGenres = new ArrayList<>();
+            if (genreIds != null) {
+                for (Genre genre : genres) {
+                    if (genreIds.contains(genre.getId())) {
+                        filmGenres.add(genre);
+                    }
+                }
+            }
+            film.setGenres(filmGenres);
+        }
         List<Mpa> mpa = mpaStorage.getAllMpa();
         for (Film film : films) {
             film.setMpa(mpa.get(film.getMpa().getId() - 1));
@@ -74,16 +116,6 @@ public class FilmService {
             newFilm.setGenres(genreStorage.update(newFilm));
         }
         return newFilm;
-    }
-
-    public List<Film> getAllFilms() {
-        List<Film> films = filmStorage.getAllFilms();
-        List<Mpa> mpa = mpaStorage.getAllMpa();
-        for (Film film : films) {
-            film.setMpa(mpa.get(film.getMpa().getId() - 1));
-            film.setGenres(genreStorage.getFilmsGenres(film.getId()));
-        }
-        return films;
     }
 
     public Film getFilm(int id) {

@@ -73,6 +73,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return storage.containsKey(filmId);
     }
 
+    @Override
+    public int getFilmCount() {
+        return storage.size();
+    }
+
     protected Film validateFilm(Film film) {
         isValidName(film);
         isValidDescription(film);
