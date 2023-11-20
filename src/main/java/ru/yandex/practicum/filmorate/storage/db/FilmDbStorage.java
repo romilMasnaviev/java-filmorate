@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -8,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.memory.InMemoryFilmStorage;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,19 +38,21 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film addFilm(Film film) {
         validateFilm(film);
-        String sql = "INSERT INTO films ( film_name,film_release_date, film_description,film_duration, film_rate, film_mpa_id) VALUES ( ?, ?, ?, ?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql,
-                film.getName(),
-                film.getReleaseDate(),
-                film.getDescription(),
-                film.getDuration(),
-                film.getRate(),
-                film.getMpa().getId());
+        String sql = "INSERT INTO films ( film_name, film_release_date, film_description, film_duration, film_rate, film_mpa_id) VALUES (?, ?, ?, ?, ?, ?)";
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int rowsAffected = jdbcTemplate.update((con) -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"film_id"});
+            ps.setString(1, film.getName());
+            ps.setDate(2, java.sql.Date.valueOf(film.getReleaseDate()));
+            ps.setString(3, film.getDescription());
+            ps.setInt(4, film.getDuration());
+            ps.setInt(5, film.getRate());
+            ps.setInt(6, film.getMpa().getId());
+            return ps;
+        }, keyHolder);
         if (rowsAffected > 0) {
-            String sqlSelect = "SELECT TOP 1 film_id FROM films ORDER BY film_id DESC";
-            Integer filmId = jdbcTemplate.queryForObject(sqlSelect, Integer.class);
-            if (filmId != null) {
-                film.setId(filmId);
+            if (keyHolder.getKey() != null) {
+                film.setId(keyHolder.getKey().intValue());
                 return film;
             }
         }
