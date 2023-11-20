@@ -40,33 +40,14 @@ public class UserService {
     }
 
     public List<User> getFriends(int id) {
-        List<Integer> friendsId = new ArrayList<>();
-        if (id < 1) {
-            throw new NotFoundException("wrong friend id");
-        }
-        if (userStorage.containsUser(id)) {
-            friendsId = friendStorage.getFriendsList(id);
-        }
-        List<User> friends = new ArrayList<>();
-        for (Integer friendId : friendsId) {
-            friends.add(userStorage.getUser(friendId));
-        }
-        return friends;
+        return friendStorage.getFriendsList(id);
     }
 
-    public List<User> getSameFriends(int id, int otherId) {
-        List<Integer> friendsId = new ArrayList<>();
+    public List<User> getSameFriendsSet(int id, int otherId) {
         if (id < 1) {
             throw new NotFoundException("wrong friend id");
         }
-        if (userStorage.containsUser(id)) {
-            friendsId = friendStorage.getSameFriends(id, otherId);
-        }
-        List<User> friends = new ArrayList<>();
-        for (Integer friendId : friendsId) {
-            friends.add(userStorage.getUser(friendId));
-        }
-        return friends;
+        return friendStorage.getSameFriends(id,otherId);
     }
 
     public User addUser(User user) {

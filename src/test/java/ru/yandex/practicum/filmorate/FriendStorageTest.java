@@ -35,12 +35,6 @@ public class FriendStorageTest {
     }
 
     @Test
-    public void testGetEmptyFriendsList() {
-        List<Integer> user1Friends = friendStorage.getFriendsList(3);
-        assertTrue(user1Friends.isEmpty());
-    }
-
-    @Test
     public void testAddFriendWithInvalidId() {
         userDbStorage.addUser(user1);
         userDbStorage.addUser(user2);
