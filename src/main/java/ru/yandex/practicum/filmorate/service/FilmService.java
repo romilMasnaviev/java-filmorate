@@ -94,19 +94,4 @@ public class FilmService {
         return film;
     }
 
-    public Genre getGenre(int genreId) {
-        return genreStorage.getGenre(genreId);
-    }
-
-    public List<Genre> getAllGenres() {
-        return genreStorage.getAllGenres();
-    }
-
-    public Mpa getMpa(int id) {
-        return mpaStorage.getMpa(id);
-    }
-
-    public List<Mpa> getAllMpa() {
-        return mpaStorage.getAllMpa();
-    }
 }
