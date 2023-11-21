@@ -90,12 +90,6 @@ public class FilmDbStorage extends InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getAllFilms() {
-        String sql = "SELECT * FROM films ";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> Film.builder().id(rs.getInt("film_id")).name(rs.getString("film_name")).releaseDate(rs.getDate("film_release_date").toLocalDate()).description(rs.getString("film_description")).duration(rs.getInt("film_duration")).rate(rs.getInt("film_rate")).mpa(Mpa.builder().id(rs.getInt("film_mpa_id")).build()).build());
-    }
-
-    @Override
     public boolean containsFilm(int filmId) {
         return getFilm(filmId) != null;
     }

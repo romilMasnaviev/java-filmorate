@@ -75,7 +75,6 @@ public class FilmService {
 
     public List<Film> getAllFilms() {
         List<Film> films = likeStorage.getPopular(filmStorage.getFilmCount());
-        System.out.println(films);
         Map<Integer, List<Integer>> filmsGenres = likeStorage.getAllFilmsGenres();
         List<Genre> genres = genreStorage.getAllGenres();
         for (Film film : films) {
