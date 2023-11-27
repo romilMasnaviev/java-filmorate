@@ -19,4 +19,5 @@ public class ErrorHandler {
     public ErrorResponse validationException(final ValidationException e) {
         return new ErrorResponse("notFoundException : " + e.getMessage());
     }
+
 }

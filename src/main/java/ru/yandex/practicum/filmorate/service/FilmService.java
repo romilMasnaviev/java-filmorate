@@ -1,66 +1,127 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.db.GenreDbStorage;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class FilmService {
 
-    private final FilmStorage storage;
+    private final FilmStorage filmStorage;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
+    private final LikeStorage likeStorage;
 
     @Autowired
-    public FilmService(FilmStorage storage) {
-        this.storage = storage;
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage, GenreDbStorage genreStorage, LikeStorage likeStorage) {
+        this.filmStorage = filmStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
     public void likeFilm(int id, int userId) {
-        if (storage.containsFilm(id)) {
+        if (filmStorage.containsFilm(id)) {
             if (userId > 0) {
-                storage.getFilm(id).getLikes().add(userId);
+                likeStorage.like(userId, id);
             } else throw new NotFoundException("There is no user with this id");
         } else throw new NotFoundException("There is no movie with this id");
     }
 
     public void unLikeFilm(int id, int userId) {
-        if (storage.containsFilm(id)) {
+        if (filmStorage.containsFilm(id)) {
             if (userId > 0) {
-                storage.getFilm(id).getLikes().remove(userId);
+                likeStorage.unlike(userId, id);
             } else throw new NotFoundException("There is no user with this id");
         } else throw new NotFoundException("There is no movie with this id");
     }
 
     public List<Film> getTopFilms(int size) {
-        List<Film> sortedFilms = storage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
-                .collect(Collectors.toList());
-
-        if (size < sortedFilms.size()) {
-            sortedFilms = sortedFilms.subList(0, size);
+        List<Film> films = likeStorage.getPopular(size);
+        Map<Integer, List<Integer>> filmsGenres = likeStorage.getTopFilmsGenres(size);
+        List<Genre> genres = genreStorage.getAllGenres();
+        for (Film film : films) {
+            List<Integer> genreIds = filmsGenres.get(film.getId());
+            List<Genre> filmGenres = new ArrayList<>();
+            if (genreIds != null) {
+                for (Genre genre : genres) {
+                    if (genreIds.contains(genre.getId())) {
+                        filmGenres.add(genre);
+                    }
+                }
+            }
+            film.setGenres(filmGenres);
         }
+        List<Mpa> mpa = mpaStorage.getAllMpa();
+        for (Film film : films) {
+            film.setMpa(mpa.get(film.getMpa().getId() - 1));
 
-        return sortedFilms;
-    }
-
-    public Film addFilm(Film film) {
-        return storage.addFilm(film);
-    }
-
-    public Film updateFilm(Film film) {
-        return storage.updateFilm(film);
+        }
+        return films;
     }
 
     public List<Film> getAllFilms() {
-        return storage.getAllFilms();
+        List<Film> films = likeStorage.getPopular(filmStorage.getFilmCount());
+        Map<Integer, List<Integer>> filmsGenres = likeStorage.getAllFilmsGenres();
+        List<Genre> genres = genreStorage.getAllGenres();
+        for (Film film : films) {
+            List<Integer> genreIds = filmsGenres.get(film.getId());
+            List<Genre> filmGenres = new ArrayList<>();
+            if (genreIds != null) {
+                for (Genre genre : genres) {
+                    if (genreIds.contains(genre.getId())) {
+                        filmGenres.add(genre);
+                    }
+                }
+            }
+            film.setGenres(filmGenres);
+        }
+        List<Mpa> mpa = mpaStorage.getAllMpa();
+        for (Film film : films) {
+            film.setMpa(mpa.get(film.getMpa().getId() - 1));
+            film.setGenres(genreStorage.getFilmsGenres(film.getId()));
+        }
+        return films;
+    }
+
+    public Film addFilm(Film film) {
+        Film film1 = filmStorage.addFilm(film);
+        if (film1.getGenres() != null) {
+            film1.setGenres(genreStorage.addGenreToFilm(film.getGenres(), film.getId()));
+        }
+        return film1;
+    }
+
+    public Film updateFilm(Film film) {
+        if (!filmStorage.containsFilm(film.getId())) {
+            throw new NotFoundException("There's no such movie in the storage ");
+        }
+        Film newFilm = filmStorage.updateFilm(film);
+        newFilm.setMpa(mpaStorage.getMpa(film.getMpa().getId()));
+        if (film.getGenres() != null) {
+            newFilm.setGenres(genreStorage.update(newFilm));
+        }
+        return newFilm;
     }
 
     public Film getFilm(int id) {
-        return storage.getFilm(id);
+        Film film = filmStorage.getFilm(id);
+        film.setMpa(mpaStorage.getMpa(film.getMpa().getId()));
+        film.setGenres(genreStorage.getFilmsGenres(film.getId()));
+        return film;
     }
+
 }

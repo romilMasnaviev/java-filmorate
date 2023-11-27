@@ -17,4 +17,6 @@ public interface FilmStorage {
     List<Film> getAllFilms();
 
     boolean containsFilm(int filmId);
+
+    int getFilmCount();
 }

@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController()
@@ -59,9 +58,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getSameFriends(@PathVariable int id, @PathVariable int otherId) {
+    public List<User> getSameFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Received request to get same friend list");
-        return service.getSameFriends(id, otherId);
+        return service.getSameFriendsSet(id, otherId);
     }
 
 }
